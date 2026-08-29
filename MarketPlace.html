@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MarketPlace — все маркетплейсы тут</title>
+    
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='25' fill='%23ff4757'/><path d='M50 25 L75 75 L25 75 Z M50 42 L37 68 L63 68 Z' fill='white'/></svg>">
+    
+    <meta name="description" content="Мгновенный переход на Ozon, Wildberries, Яндекс Маркет, Магнит, Купер и другие. Быстро, просто, без рекламы.">
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ============================================================
+           БАЗА С 3D-ЭФФЕКТАМИ
+        ============================================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0a0a12;
+            --bg-card: rgba(255, 255, 255, 0.04);
+            --bg-card-hover: rgba(255, 255, 255, 0.08);
+            --border: rgba(255, 255, 255, 0.06);
+            --text: #ffffff;
+            --text-light: rgba(255, 255, 255, 0.7);
+            --text-muted: rgba(255, 255, 255, 0.3);
+            --accent: #ff4757;
+            --accent-glow: rgba(255, 71, 87, 0.15);
+            --accent-2: #ff6b81;
+            --shadow: 0 25px 80px rgba(255, 71, 87, 0.06);
+            --radius: 20px;
+            --transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            --font: 'Inter', 'Times New Roman', serif;
+        }
+
+        [data-theme="light"] {
+            --bg: #f0f2f5;
+            --bg-card: rgba(255, 255, 255, 0.7);
+            --bg-card-hover: rgba(255, 255, 255, 0.9);
+            --border: rgba(0, 0, 0, 0.06);
+            --text: #1a1a2e;
+            --text-light: rgba(0, 0, 0, 0.6);
+            --text-muted: rgba(0, 0, 0, 0.3);
+            --accent: #ff4757;
+            --accent-glow: rgba(255, 71, 87, 0.08);
+            --shadow: 0 25px 80px rgba(0, 0, 0, 0.04);
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            padding: 20px;
+            transition: background 0.5s ease, color 0.5s ease;
+            background-image:
+                radial-gradient(ellipse at 20% 30%, var(--accent-glow) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 70%, var(--accent-glow) 0%, transparent 60%);
+        }
+
+        /* ============================================================
+           АНИМИРОВАННЫЙ 3D-ФОН
+        ============================================================ */
+        .bg-orbs {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.2;
+            animation: orbFloat 25s ease-in-out infinite alternate;
+            transition: opacity 0.5s ease;
+            will-change: transform;
+        }
+
+        [data-theme="light"] .orb { opacity: 0.06; }
+
+        .orb-1 {
+            width: 600px;
+            height: 600px;
+            background: #ff4757;
+            top: -200px;
+            right: -100px;
+            animation-duration: 30s;
+        }
+
+        .orb-2 {
+            width: 500px;
+            height: 500px;
+            background: #ff6b81;
+            bottom: -150px;
+            left: -100px;
+            animation-duration: 35s;
+            animation-delay: -8s;
+        }
+
+        .orb-3 {
+            width: 350px;
+            height: 350px;
+            background: #ff4757;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-duration: 40s;
+            animation-delay: -15s;
+            opacity: 0.08;
+        }
+
+        @keyframes orbFloat {
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+            25% { transform: translate(50px, -40px) scale(1.15) rotate(8deg); }
+            50% { transform: translate(-30px, 50px) scale(0.85) rotate(-5deg); }
+            75% { transform: translate(40px, 30px) scale(1.08) rotate(6deg); }
+            100% { transform: translate(-40px, -30px) scale(0.92) rotate(-3deg); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* ============================================================
+           ШАПКА — СТЕКЛЯННАЯ
+        ============================================================ */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 28px;
+            background: var(--bg-card);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            margin-bottom: 36px;
+            flex-wrap: wrap;
+            gap: 16px;
+            transition: var(--transition);
+        }
+
+        .header:hover {
+            border-color: rgba(255, 71, 87, 0.15);
+            box-shadow: 0 0 40px var(--accent-glow);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 900;
+            color: #fff;
+            box-shadow: 0 0 40px var(--accent-glow);
+            transition: var(--transition);
+            animation: logoPulse 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes logoPulse {
+            0% { box-shadow: 0 0 40px var(--accent-glow); }
+            100% { box-shadow: 0 0 60px rgba(255, 71, 87, 0.25); }
+        }
+
+        .logo:hover .logo-icon {
+            transform: scale(1.05) rotate(-3deg);
+        }
+
+        .logo-text {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--text);
+            letter-spacing: -0.5px;
+            transition: color 0.3s ease;
+            font-family: var(--font);
+        }
+
+        .logo-text span {
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .header-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 18px;
+            background: var(--accent-glow);
+            border: 1px solid rgba(255, 71, 87, 0.12);
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--accent);
+            transition: var(--transition);
+        }
+
+        .header-badge .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #34d399;
+            animation: pulseDot 2s ease-in-out infinite;
+        }
+
+        @keyframes pulseDot {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.3; transform: scale(0.6); }
+        }
+
+        .theme-toggle {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 8px 14px;
+            cursor: pointer;
+            color: var(--text-light);
+            font-size: 16px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--font);
+        }
+
+        .theme-toggle:hover {
+            border-color: rgba(255, 71, 87, 0.2);
+            color: var(--text);
+        }
+
+        /* ============================================================
+           ГЕРОЙ
+        ============================================================ */
+        .hero {
+            text-align: center;
+            padding: 24px 20px 32px;
+            position: relative;
+            animation: heroIn 0.8s ease forwards;
+            opacity: 0;
+        }
+
+        @keyframes heroIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+            opacity: 0.2;
+        }
+
+        .hero-top {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--accent-glow);
+            border: 1px solid rgba(255, 71, 87, 0.08);
+            padding: 8px 22px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 20px;
+            transition: var(--transition);
+            animation: heroBadgePulse 3s ease-in-out infinite;
+        }
+
+        @keyframes heroBadgePulse {
+            0%, 100% { border-color: rgba(255, 71, 87, 0.08); }
+            50% { border-color: rgba(255, 71, 87, 0.2); }
+        }
+
+        .hero h1 {
+            font-size: 56px;
+            font-weight: 900;
+            color: var(--text);
+            letter-spacing: -2px;
+            line-height: 1.05;
+            margin-bottom: 16px;
+            transition: color 0.3s ease;
+            font-family: var(--font);
+        }
+
+        .hero h1 .gradient {
+            background: linear-gradient(135deg, var(--accent), var(--accent-2), #ff4757);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 300% 300%;
+            animation: gradientMove 4s ease-in-out infinite;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .hero p {
+            font-size: 18px;
+            color: var(--text-light);
+            max-width: 520px;
+            margin: 0 auto 28px;
+            line-height: 1.7;
+            font-weight: 400;
+            transition: color 0.3s ease;
+            font-family: var(--font);
+        }
+
+        .hero-actions {
+            display: flex;
+            justify-content: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .btn-primary {
+            padding: 14px 36px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-2));
+            border: none;
+            border-radius: 60px;
+            color: white;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: var(--font);
+            box-shadow: 0 8px 40px var(--accent-glow);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, transparent, rgba(255, 255, 255, 0.1));
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+        }
+
+        .btn-primary:hover::before { transform: translateX(0); }
+
+        .btn-primary:hover {
+            transform: translateY(-4px) scale(1.03);
+            box-shadow: 0 16px 60px rgba(255, 71, 87, 0.3);
+        }
+
+        .btn-secondary {
+            padding: 14px 36px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 60px;
+            color: var(--text-light);
+            font-weight: 600;
+            font-size: 15px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: var(--font);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-secondary:hover {
+            border-color: rgba(255, 71, 87, 0.2);
+            color: var(--text);
+            transform: translateY(-4px);
+            background: var(--bg-card-hover);
+        }
+
+        /* ============================================================
+           ПОИСК И СОРТИРОВКА
+        ============================================================ */
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 32px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-box {
+            flex: 1;
+            max-width: 440px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 14px 22px 14px 52px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 60px;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text);
+            outline: none;
+            transition: var(--transition);
+            font-family: var(--font);
+            backdrop-filter: blur(10px);
+        }
+
+        .search-box input::placeholder { color: var(--text-muted); }
+
+        .search-box input:focus {
+            border-color: rgba(255, 71, 87, 0.3);
+            box-shadow: 0 0 0 5px var(--accent-glow);
+            background: var(--bg-card-hover);
+        }
+
+        .search-box .search-icon {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 18px;
+        }
+
+        .search-box .clear-btn {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 16px;
+            padding: 4px 8px;
+            display: none;
+            transition: var(--transition);
+        }
+
+        .search-box .clear-btn.visible { display: block; }
+
+        .sort-group {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .sort-btn {
+            padding: 10px 20px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            color: var(--text-light);
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: var(--font);
+        }
+
+        .sort-btn:hover {
+            border-color: rgba(255, 71, 87, 0.2);
+            color: var(--text);
+            transform: translateY(-2px);
+        }
+
+        .sort-btn.active {
+            background: var(--accent-glow);
+            border-color: rgba(255, 71, 87, 0.2);
+            color: var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        /* ============================================================
+           СЕТКА С 3D-ЭФФЕКТАМИ
+        ============================================================ */
+        .marketplace-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 16px;
+            margin-bottom: 48px;
+        }
+
+        .marketplace-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px 14px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            animation: cardIn 0.6s ease forwards;
+            opacity: 0;
+            transform-origin: center;
+        }
+
+        .marketplace-card:nth-child(1) { animation-delay: 0.05s; }
+        .marketplace-card:nth-child(2) { animation-delay: 0.10s; }
+        .marketplace-card:nth-child(3) { animation-delay: 0.15s; }
+        .marketplace-card:nth-child(4) { animation-delay: 0.20s; }
+        .marketplace-card:nth-child(5) { animation-delay: 0.25s; }
+        .marketplace-card:nth-child(6) { animation-delay: 0.30s; }
+        .marketplace-card:nth-child(7) { animation-delay: 0.35s; }
+        .marketplace-card:nth-child(8) { animation-delay: 0.40s; }
+        .marketplace-card:nth-child(9) { animation-delay: 0.45s; }
+        .marketplace-card:nth-child(10) { animation-delay: 0.50s; }
+        .marketplace-card:nth-child(11) { animation-delay: 0.55s; }
+        .marketplace-card:nth-child(12) { animation-delay: 0.60s; }
+        .marketplace-card:nth-child(13) { animation-delay: 0.65s; }
+        .marketplace-card:nth-child(14) { animation-delay: 0.70s; }
+        .marketplace-card:nth-child(15) { animation-delay: 0.75s; }
+        .marketplace-card:nth-child(16) { animation-delay: 0.80s; }
+        .marketplace-card:nth-child(17) { animation-delay: 0.85s; }
+        .marketplace-card:nth-child(18) { animation-delay: 0.90s; }
+        .marketplace-card:nth-child(19) { animation-delay: 0.95s; }
+        .marketplace-card:nth-child(20) { animation-delay: 1.00s; }
+        .marketplace-card:nth-child(21) { animation-delay: 1.05s; }
+        .marketplace-card:nth-child(22) { animation-delay: 1.10s; }
+        .marketplace-card:nth-child(23) { animation-delay: 1.15s; }
+        .marketplace-card:nth-child(24) { animation-delay: 1.20s; }
+        .marketplace-card:nth-child(25) { animation-delay: 1.25s; }
+        .marketplace-card:nth-child(26) { animation-delay: 1.30s; }
+        .marketplace-card:nth-child(27) { animation-delay: 1.35s; }
+        .marketplace-card:nth-child(28) { animation-delay: 1.40s; }
+        .marketplace-card:nth-child(29) { animation-delay: 1.45s; }
+        .marketplace-card:nth-child(30) { animation-delay: 1.50s; }
+
+        @keyframes cardIn {
+            from {
+                opacity: 0;
+                transform: translateY(40px) scale(0.95) rotateX(5deg);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1) rotateX(0deg);
+            }
+        }
+
+        .marketplace-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: var(--radius);
+            background: linear-gradient(135deg, var(--accent-glow), transparent);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .marketplace-card::after {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: var(--radius);
+            padding: 1px;
+            background: linear-gradient(135deg, rgba(255, 71, 87, 0), rgba(255, 71, 87, 0));
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            transition: var(--transition);
+            pointer-events: none;
+        }
+
+        .marketplace-card:hover::after {
+            background: linear-gradient(135deg, rgba(255, 71, 87, 0.4), rgba(255, 107, 129, 0.4));
+        }
+
+        .marketplace-card:hover {
+            transform: translateY(-10px) scale(1.02) rotateX(2deg);
+            border-color: rgba(255, 71, 87, 0.15);
+            box-shadow: var(--shadow);
+        }
+
+        .marketplace-card:hover::before { opacity: 1; }
+
+        .marketplace-card:active {
+            transform: scale(0.94);
+            transition-duration: 0.1s;
+        }
+
+        .marketplace-card .logo-wrap {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 12px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            position: relative;
+            z-index: 1;
+            background: transparent;
+            padding: 4px;
+            overflow: hidden;
+        }
+
+        .marketplace-card .logo-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 12px;
+            background: transparent;
+            transition: var(--transition);
+        }
+
+        .marketplace-card:hover .logo-wrap {
+            transform: scale(1.08) rotate(-4deg);
+        }
+
+        .marketplace-card .name {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text);
+            position: relative;
+            z-index: 1;
+            transition: color 0.3s ease;
+            font-family: var(--font);
+        }
+
+        .marketplace-card .badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 3px 10px;
+            border-radius: 50px;
+            font-size: 8px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            z-index: 2;
+            backdrop-filter: blur(10px);
+        }
+
+        .badge.popular {
+            background: rgba(255, 71, 87, 0.15);
+            color: var(--accent);
+            border: 1px solid rgba(255, 71, 87, 0.15);
+        }
+
+        .badge.hot {
+            background: rgba(251, 146, 60, 0.15);
+            color: #fb923c;
+            border: 1px solid rgba(251, 146, 60, 0.15);
+        }
+
+        .badge.new {
+            background: rgba(52, 211, 153, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(52, 211, 153, 0.15);
+        }
+
+        .marketplace-card .hover-indicator {
+            position: absolute;
+            bottom: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 11px;
+            color: var(--text-muted);
+            opacity: 0;
+            transition: var(--transition);
+            z-index: 1;
+        }
+
+        .marketplace-card:hover .hover-indicator {
+            opacity: 1;
+            color: var(--text-light);
+        }
+
+        /* ============================================================
+           БЛОК ДОВЕРИЯ
+        ============================================================ */
+        .trust-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 14px;
+            margin-bottom: 48px;
+        }
+
+        .trust-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 20px 22px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
+            animation: trustIn 0.8s ease forwards;
+            opacity: 0;
+        }
+
+        .trust-item:nth-child(1) { animation-delay: 0.1s; }
+        .trust-item:nth-child(2) { animation-delay: 0.2s; }
+        .trust-item:nth-child(3) { animation-delay: 0.3s; }
+        .trust-item:nth-child(4) { animation-delay: 0.4s; }
+
+        @keyframes trustIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .trust-item:hover {
+            border-color: rgba(255, 71, 87, 0.15);
+            transform: translateY(-4px);
+            background: var(--bg-card-hover);
+        }
+
+        .trust-item .icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            background: var(--accent-glow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--accent);
+            flex-shrink: 0;
+        }
+
+        .trust-item .text {
+            font-size: 13px;
+            color: var(--text-light);
+            line-height: 1.5;
+            font-family: var(--font);
+        }
+
+        .trust-item .text strong {
+            color: var(--text);
+            display: block;
+            font-size: 15px;
+            margin-bottom: 2px;
+            font-family: var(--font);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 24px 0 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer .copy {
+            font-size: 14px;
+            color: var(--text-muted);
+            letter-spacing: 0.3px;
+            font-family: var(--font);
+        }
+
+        .footer .copy .heart {
+            color: var(--accent);
+            display: inline-block;
+            animation: heartBeat 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        .footer .copy .brand {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%) translateY(120px);
+            background: var(--bg-card);
+            backdrop-filter: blur(30px);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 16px 32px;
+            border-radius: 16px;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            opacity: 0;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            min-width: 200px;
+            justify-content: center;
+            font-family: var(--font);
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        .toast .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.06);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .toast .toast-icon {
+            font-size: 20px;
+            color: #34d399;
+        }
+
+        @media (max-width: 1024px) {
+            .hero h1 { font-size: 44px; }
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 14px; }
+
+            .header {
+                padding: 14px 18px;
+                flex-direction: column;
+                text-align: center;
+                gap: 12px;
+            }
+
+            .hero h1 { font-size: 30px; }
+            .hero p { font-size: 16px; }
+
+            .marketplace-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 12px;
+            }
+
+            .marketplace-card {
+                padding: 18px 10px 16px;
+            }
+
+            .marketplace-card .logo-wrap {
+                width: 56px;
+                height: 56px;
+                padding: 4px;
+            }
+
+            .marketplace-card .name { font-size: 13px; }
+            .marketplace-card .badge { font-size: 7px; padding: 2px 8px; top: 8px; right: 8px; }
+
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box { max-width: 100%; }
+            .sort-group { justify-content: center; }
+
+            .trust-bar { grid-template-columns: 1fr 1fr; }
+            .trust-item { padding: 14px 16px; }
+
+            .btn-primary, .btn-secondary { padding: 12px 24px; font-size: 14px; }
+
+            .toast {
+                width: 90%;
+                padding: 14px 20px;
+                font-size: 13px;
+                min-width: unset;
+            }
+
+            .logo-text { font-size: 22px; }
+            .logo-icon { width: 42px; height: 42px; font-size: 18px; }
+        }
+
+        @media (max-width: 480px) {
+            .marketplace-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+
+            .marketplace-card {
+                padding: 14px 8px 12px;
+                border-radius: 14px;
+            }
+
+            .marketplace-card .logo-wrap {
+                width: 48px;
+                height: 48px;
+                padding: 4px;
+                border-radius: 12px;
+            }
+
+            .marketplace-card .logo-wrap img {
+                border-radius: 10px;
+            }
+
+            .marketplace-card .name { font-size: 12px; }
+            .marketplace-card .badge { font-size: 6px; padding: 1px 6px; top: 6px; right: 6px; }
+            .marketplace-card .hover-indicator { display: none; }
+
+            .hero h1 { font-size: 26px; }
+            .hero p { font-size: 15px; }
+
+            .trust-bar { grid-template-columns: 1fr; }
+
+            .search-box input {
+                padding: 12px 16px 12px 44px;
+                font-size: 13px;
+            }
+
+            .header-badge { font-size: 11px; padding: 6px 14px; }
+            .logo-text { font-size: 18px; }
+            .logo-icon { width: 38px; height: 38px; font-size: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <div class="container">
+
+        <header class="header">
+            <a href="#" class="logo">
+                <div class="logo-icon">MP</div>
+                <div class="logo-text">Market<span>Place</span></div>
+            </a>
+            <div class="header-actions">
+                <div class="header-badge">
+                    <span class="dot"></span>
+                    30+ площадок
+                </div>
+                <button class="theme-toggle" id="themeToggle">
+                    <span id="themeIcon">🌙</span>
+                </button>
+            </div>
+        </header>
+
+        <section class="hero">
+            <div class="hero-top"><i>🔥</i> Мгновенный доступ</div>
+            <h1>Все маркетплейсы<br><span class="gradient">в одном месте</span></h1>
+            <p>Нажми на любой маркетплейс — и сразу переходи.</p>
+            <div class="hero-actions">
+                <a href="#catalog" class="btn-primary"><i>⚡</i> Перейти</a>
+                <a href="#trust" class="btn-secondary"><i>🛡️</i> Почему доверяют</a>
+            </div>
+        </section>
+
+        <div class="controls" id="catalog">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="searchInput" placeholder="Найти маркетплейс..." autocomplete="off">
+                <button class="clear-btn" id="clearBtn">✕</button>
+            </div>
+            <div class="sort-group">
+                <button class="sort-btn active" data-sort="popular">⭐ Популярные</button>
+                <button class="sort-btn" data-sort="alphabet">🔤 По алфавиту</button>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        ВСЕ МАРКЕТПЛЕЙСЫ (30+)
+        ============================================================ -->
+        <div class="marketplace-grid" id="marketplaceGrid">
+            
+            <!-- 1. Ozon -->
+            <a href="https://www.ozon.ru" target="_blank" class="marketplace-card" data-name="Ozon">
+                <span class="badge popular">Популярный</span>
+                <div class="logo-wrap"><img src="https://trace-logos.ru/assets/logos/previews/ozon.webp?v=20260829" alt="Ozon" loading="lazy"></div>
+                <div class="name">Ozon</div>
+                <div class="hover-indicator"><i>→</i> Перейти</div>
+            </a>
+
+            <!-- 2. Wildberries -->
+            <a href="https://www.wildberries.ru" target="_blank" class="marketplace-card" data-name="Wildberries">
+                <span class="badge hot">Топ</span>
+                <div class="logo-wrap"><img src="https://trace-logos.ru/assets/logos/previews/wildberries.webp?v=20260829" alt="Wildberries" loading="lazy"></div>
+                <div class="name">Wildberries</div>
+                <div class="hover-indicator"><i>→</i> Перейти</div>
+            </a>
+
+            <!-- 3. Яндекс Маркет -->
+            <a href="https://market.yandex.ru" target="_blank" class="marketplace-card" data-name="Яндекс Маркет">
+                <span class="badge popular">Популярный</span>
+                <div class="logo-wrap"><img src="https://trace-logos.ru/assets/logos/previews/yandex-market.webp?v=20260829" alt="Яндекс Маркет" loading="lazy"></div>
+                <div class="name">Яндекс Маркет</div>
+                <div class="hover-indicator"><i>→</i> Перейти</div>
+            </a>
+
+            <!-- 4. Авито -->
+            <a href="https://www.avito.ru" target="_blank" class="marketplace-card" data-name="Авито">
+                <span class="badge hot">Хит</span>
+                <div class="logo-wrap"><img src="https://trace-logos.ru/assets/logos/previews/avito.webp?v=20260829" alt="Авито" loading="lazy"></div>
+                <div class="name">Авито</div>
+                <div class="hover-indicator"><i>→</i> Перейти</div>
+            </a>
+
+            <!-- 5. DNS -->
+            <a href="https://www.dns-shop.ru" target="_blank" class="marketplace-card" data-name="DNS">
+                <div class="logo-wrap"><img src="https://trace-logos.ru/assets/logos/previews/dns.webp?v=20260829" alt="DNS" loading="lazy"></div>
+                <div class="name">DNS</div>
+                <div class="hover-indicator"><i>→</i> Перейти</div>
+            </a>
+
+            <!-- 6. М.Видео -->
+            <a href="https://www.mvideo.ru" target="_blank" class="marketplace-card" data-name="М.Видео">
+                <div class="logo-wrap"><img src="https://trace-logos.ru/assets/logos/previews/mvideo.webp?v=20260829" alt="М.Видео" loading="lazy"></div>
+                <div class="name">М.Видео</div>
+                <div class="hover-indicator"><i>→</i> Перейти</div>
+            </a>
+
+            <!-- 7. Золотое яблоко -->
+            <a href="https://www.zolotoe.ru" target="_blank" class="marketplace-card" data-name="Золотое яблоко">
+                <div class="logo-wrap"><img src="https://trace-logos.ru/assets/logos/previews/golden-apple.webp?v=20260829" alt="Золотое яблоко" loading="lazy"></div>
+                <div class="name">Золотое яблоко</div>
+                <div class="hover-indicator"><i>→</i> Перейти</div>
+            </a>
+
+            <!-- 8. Lamoda -->
+            <a href="https://www.lamoda.ru" target="_blank" class="marketplace-card" data-name="Lamoda">
+                <span class="badge new">Стиль</span>
+                <div class="logo-wrap"><img src="https://trace-logos.ru/assets/logos/previews/lamoda.webp?v=20260829" alt="Lamoda" loading="lazy"></div>
+                <div class="name">Lamoda</div>
+                <div class="hover-indicator"><i>→</i> Перейти</div>
+            </a>
+
+            <!-- 9. Магнит -->
+            <a href="https://www.magnit.ru" target="_blank" class="marketplace-card" data-name="Магнит">
+                <div class="logo-wrap"><img src="https://trace-logos.ru/assets/logos/previews/magnit-market.webp?v=20260829" alt="Магнит" loading="lazy"></div>
+                <div class="name">Магнит</div>
+                <div class="hover-indicator"><i>→</i> Перейти</div>
+            </a>
+
+            <!-- 10. Купер -->
+            <a href="https://sbermarket.ru" target="_blank" class="marketplace-card" data-name="Купер">
+                <div class="logo-wrap"><img src="https://trace-logos.ru/assets/logos/previews/kuper.webp?v=20260829" alt="Купер" loading="lazy"></div>
+                <div class="name">Купер</div>
+                <div class="hover-indicator"><i>→</i> Перейти</div>
+            </a>
+
+            <!-- 11. AliExpress -->
+            <a href="https://aliexpress.ru" target="_blank" class="marketplace-card" data-name="AliExpress">
+                <span class="badge new">Новинка</span>
+                <div class="logo-wrap"><img src="https://trace-logos.ru/assets/logos/previews/apple/26/color/aliexpress.webp?v=20260829" alt="AliExpress" loading="lazy"></div>
+                <div class="name">AliExpress</div>
+                <div class="hover-indicator"><i>→</i> Перейти</div>
+            </a>
+
+            <!-- 12. Ситилинк -->
+            <a href="https://www.citilink.ru" target="_blank" class="marketplace-card" data-name="Ситилинк">
+                <div class="logo-wrap"><img src="https://trace-logos.ru/assets/logos/previews/citilink.webp?v=20260829" alt="Ситилинк" loading="lazy"></div>
+                <div class="name">Ситилинк</div>
+                <div class="hover-indicator"><i>→</i> Перейти</div>
+            </a>
+
+            <!-- 13. VK Билеты -->
+            <a href="https://vk.com/bilety" target="_blank" class="marketplace-card" data-name="VK Билеты">
+                <div class="logo-wrap"><img src="https://trace-logos.ru/assets/logos/previews/vk-ticket.webp?v=20260829" alt="VK Билеты" loading="lazy"></div>
+                <div class="name">VK Билеты</div>
+                <div class="hover-indicator"><i>→</i> Перейти</div>
+            </a>
+
+            <!-- 14. Эльдорадо -->
+            <a href="https://www.eldorado.ru" target="_blank" class="marketplace-card" data-name="Эльдорадо">
+                <div class="logo-wrap"><img src="https://trace-logos.ru/assets/logos/previews/eldorado.webp?v=20260829" alt="Эльдорадо" loading="lazy"></div>
+                <div class="name">Эльдорадо</div>
+                <div class="hover-indicator"><i>→</i> Перейти</div>
+            </a>
+
+            <!-- 15. Shein -->
+            <a href="https://www.shein.ru" target="_blank" class="marketplace-card" data-name="Shein">
+                <div class="logo-wrap"><img src="https://trace-logos.ru/assets/logos/previews/apple/26/color/shein.webp?v=20260829" alt="Shein" loading="lazy"></div>
+                <div class="name">Shein</div>
+                <div class="hover-indicator"><i>→</i> Перейти</div>
+            </a>
+
+            <!-- 16. ASOS -->
+            <a href="https://www.asos.com" target="_blank" class="marketplace-card" data-name="ASOS">
+                <div class="logo-wrap"><img src="https://trace-logos.ru/assets/logos/previews/apple/26/color/asos.webp?v=20260829" alt="ASOS" loading="lazy"></div>
+                <div class="name">ASOS</div>
+                <div class="hover-indicator"><i>→</i> Перейти</div>
+            </a>
+
+            <!-- 17. Детский мир -->
+            <a href="https://www.detmir.ru" target="_blank" class="marketplace-card" data-name="Детский мир">
+                <div class="logo-wrap"><img src="https://trace-logos.ru/assets/logos/previews/detskiy-mir.webp?v=20260829" alt="Детский мир" loading="lazy"></div>
+                <div class="name">Детский мир</div>
+                <div class="hover-indicator"><i>→</i> Перейти</div>
+            </a>
+
+            <!-- 18. Мегамаркет -->
+            <a href="https://megamarket.ru" target="_blank" class="marketplace-card" data-name="Мегамаркет">
+                <div class="logo-wrap"><img src="https://trace-logos.ru/assets/logos/previews/mega-market.webp?v=20260829" alt="Мегамаркет" loading="lazy"></div>
+                <div class="name">Мегамаркет</div>
+                <div class="hover-indicator"><i>→</i> Перейти</div>
+            </a>
+
+            <!-- 19. Apteka.ru -->
+            <a href="https://apteka.ru" target="_blank" class="marketplace-card" data-name="Apteka.ru">
+                <div class="logo-wrap"><img src="https://trace-logos.ru/assets/logos/previews/apteka-ru.webp?v=20260829" alt="Apteka.ru" loading="lazy"></div>
+                <div class="name">Apteka.ru</div>
+                <div class="hover-indicator"><i>→</i> Перейти</div>
+            </a>
+
+            <!-- 20. Пятёрочка -->
+            <a href="https://5ka.ru" target="_blank" class="marketplace-card" data-name="Пятёрочка">
+                <div class="logo-wrap"><img src="https://trace-logos.ru/assets/logos/previews/pyaterochka.webp?v=20260829" alt="Пятёрочка" loading="lazy"></div>
+                <div class="name">Пятёрочка</div>
+                <div class="hover-indicator"><i>→</i> Перейти</div>
+            </a>
+
+            <!-- 21. Лента -->
+            <a href="https://lenta.com" target="_blank" class="marketplace-card" data-name="Лента">
+                <div class="logo-wrap"><img src="https://trace-logos.ru/assets/logos/previews/lenta.webp?v=20260829" alt="Лента" loading="lazy"></div>
+                <div class="name">Лента</div>
+                <div class="hover-indicator"><i>→</i> Перейти</div>
+            </a>
+
+            <!-- 22. Перекрёсток -->
+            <a href="https://perekrestok.ru" target="_blank" class="marketplace-card" data-name="Перекрёсток">
+                <div class="logo-wrap"><img src="https://trace-logos.ru/assets/logos/previews/perekrestok.webp?v=20260829" alt="Перекрёсток" loading="lazy"></div>
+                <div class="name">Перекрёсток</div>
+                <div class="hover-indicator"><i>→</i> Перейти</div>
+            </a>
+
+            <!-- 23. Чижик -->
+            <a href="https://chizhik.ru" target="_blank" class="marketplace-card" data-name="Чижик">
+                <div class="logo-wrap"><img src="https://trace-logos.ru/assets/logos/previews/chizhik.webp?v=20260829" alt="Чижик" loading="lazy"></div>
+                <div class="name">Чижик</div>
+                <div class="hover-indicator"><i>→</i> Перейти</div>
+            </a>
+
+            <!-- 24. Спортмастер -->
+            <a href="https://www.sportmaster.ru" target="_blank" class="marketplace-card" data-name="Спортмастер">
+                <div class="logo-wrap"><img src="https://trace-logos.ru/assets/logos/previews/sportmaster.webp?v=20260829" alt="Спортмастер" loading="lazy"></div>
+                <div class="name">Спортмастер</div>
+                <div class="hover-indicator"><i>→</i> Перейти</div>
+            </a>
+
+            <!-- 25. ТВОЁ -->
+            <a href="https://tvoe.ru" target="_blank" class="marketplace-card" data-name="ТВОЁ">
+                <div class="logo-wrap"><img src="https://trace-logos.ru/assets/logos/previews/tvoe.webp?v=20260829" alt="ТВОЁ" loading="lazy"></div>
+                <div class="name">ТВОЁ</div>
+                <div class="hover-indicator"><i>→</i> Перейти</div>
+            </a>
+
+            <!-- 26. Ашан -->
+            <a href="https://auchan.ru" target="_blank" class="marketplace-card" data-name="Ашан">
+                <div class="logo-wrap"><img src="https://trace-logos.ru/assets/logos/previews/auchan.webp?v=20260829" alt="Ашан" loading="lazy"></div>
+                <div class="name">Ашан</div>
+                <div class="hover-indicator"><i>→</i> Перейти</div>
+            </a>
+
+            <!-- 27. Kari -->
+            <a href="https://kari.com" target="_blank" class="marketplace-card" data-name="Kari">
+                <div class="logo-wrap"><img src="https://trace-logos.ru/assets/logos/previews/kari.webp?v=20260829" alt="Kari" loading="lazy"></div>
+                <div class="name">Kari</div>
+                <div class="hover-indicator"><i>→</i> Перейти</div>
+            </a>
+
+            <!-- 28. METRO -->
+            <a href="https://metro-cc.ru" target="_blank" class="marketplace-card" data-name="METRO">
+                <div class="logo-wrap"><img src="https://trace-logos.ru/assets/logos/previews/metro.webp?v=20260829" alt="METRO" loading="lazy"></div>
+                <div class="name">METRO</div>
+                <div class="hover-indicator"><i>→</i> Перейти</div>
+            </a>
+
+            <!-- 29. GGSel -->
+            <a href="https://ggsel.ru" target="_blank" class="marketplace-card" data-name="GGSel">
+                <div class="logo-wrap"><img src="https://trace-logos.ru/assets/logos/previews/ggsel.webp?v=20260829" alt="GGSel" loading="lazy"></div>
+                <div class="name">GGSel</div>
+                <div class="hover-indicator"><i>→</i> Перейти</div>
+            </a>
+
+            <!-- 30. Л'Этуаль -->
+            <a href="https://www.letual.ru" target="_blank" class="marketplace-card" data-name="Л'Этуаль">
+                <div class="logo-wrap"><img src="https://trace-logos.ru/assets/logos/previews/letual.webp?v=20260829" alt="Л'Этуаль" loading="lazy"></div>
+                <div class="name">Л'Этуаль</div>
+                <div class="hover-indicator"><i>→</i> Перейти</div>
+            </a>
+
+        </div>
+
+        <div class="trust-bar" id="trust">
+            <div class="trust-item">
+                <div class="icon"><i>❤️</i></div>
+                <div class="text"><strong>Искренне</strong>Просто помогаем быстро попасть на нужный маркетплейс</div>
+            </div>
+            <div class="trust-item">
+                <div class="icon"><i>⚡</i></div>
+                <div class="text"><strong>Мгновенно</strong>Никаких задержек — переход за секунду</div>
+            </div>
+            <div class="trust-item">
+                <div class="icon"><i>🤝</i></div>
+                <div class="text"><strong>С душой</strong>Сайт сделан руками, с заботой о каждом</div>
+            </div>
+            <div class="trust-item">
+                <div class="icon"><i>♾️</i></div>
+                <div class="text"><strong>Всегда бесплатно</strong>Никаких скрытых платежей и подписок</div>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="copy">Сделано с <span class="heart">♥</span> для быстрого доступа <span style="margin:0 8px;color:var(--border);">·</span> <span class="brand">MarketPlace</span></div>
+        </footer>
+
+    </div>
+
+    <div class="toast" id="toast">
+        <div class="spinner" id="toastSpinner"></div>
+        <span class="toast-icon" id="toastIcon" style="display:none;">✓</span>
+        <span id="toastMessage">Переход...</span>
+    </div>
+
+    <script>
+        // ============================================================
+        // ТЕМА
+        // ============================================================
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        let currentTheme = localStorage.getItem('theme') || 'dark';
+
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            themeIcon.textContent = theme === 'dark' ? '🌙' : '☀️';
+            localStorage.setItem('theme', theme);
+            currentTheme = theme;
+        }
+
+        themeToggle.addEventListener('click', () => {
+            applyTheme(currentTheme === 'dark' ? 'light' : 'dark');
+        });
+
+        applyTheme(currentTheme);
+
+        // ============================================================
+        // ПОИСК
+        // ============================================================
+        const searchInput = document.getElementById('searchInput');
+        const clearBtn = document.getElementById('clearBtn');
+
+        function filterCards(query) {
+            const q = query.toLowerCase().trim();
+            const cards = document.querySelectorAll('.marketplace-card');
+            cards.forEach(card => {
+                const name = card.dataset.name || card.querySelector('.name')?.textContent || '';
+                const match = name.toLowerCase().includes(q);
+                card.style.display = match ? 'block' : 'none';
+            });
+        }
+
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const q = this.value.trim();
+                filterCards(q);
+                if (clearBtn) {
+                    clearBtn.classList.toggle('visible', q.length > 0);
+                }
+            });
+        }
+
+        if (clearBtn) {
+            clearBtn.addEventListener('click', function() {
+                if (searchInput) {
+                    searchInput.value = '';
+                    filterCards('');
+                    this.classList.remove('visible');
+                    searchInput.focus();
+                }
+            });
+        }
+
+        // ============================================================
+        // СОРТИРОВКА
+        // ============================================================
+        let currentSort = 'popular';
+
+        function sortCards(sort) {
+            const grid = document.getElementById('marketplaceGrid');
+            if (!grid) return;
+            const items = Array.from(grid.children);
+
+            if (sort === 'alphabet') {
+                items.sort((a, b) => {
+                    const nameA = a.dataset.name || a.querySelector('.name')?.textContent || '';
+                    const nameB = b.dataset.name || b.querySelector('.name')?.textContent || '';
+                    return nameA.localeCompare(nameB);
+                });
+            }
+
+            items.forEach(item => grid.appendChild(item));
+        }
+
+        document.querySelectorAll('.sort-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentSort = this.dataset.sort;
+                sortCards(currentSort);
+            });
+        });
+
+        // ============================================================
+        // ТОСТ И ПЕРЕХОДЫ
+        // ============================================================
+        const toast = document.getElementById('toast');
+        const toastMessage = document.getElementById('toastMessage');
+        const toastSpinner = document.getElementById('toastSpinner');
+        const toastIcon = document.getElementById('toastIcon');
+        let toastTimeout = null;
+
+        document.querySelectorAll('.marketplace-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                e.preventDefault();
+                const url = this.getAttribute('href');
+                const name = this.dataset.name || this.querySelector('.name')?.textContent || 'Маркетплейс';
+
+                const finalUrl = url + (url.includes('?') ? '&' : '?') +
+                    'utm_source=marketplace&utm_medium=referral&utm_campaign=transition&utm_content=' +
+                    name.toLowerCase();
+
+                showToast(`Переход на ${name}...`, 'loading');
+
+                setTimeout(() => {
+                    showToast(`✓ Переход на ${name} выполнен`, 'success');
+                    window.open(finalUrl, '_blank');
+                    setTimeout(hideToast, 1200);
+                }, 400);
+            });
+        });
+
+        function showToast(message, type = 'loading') {
+            if (!toast) return;
+            toastMessage.textContent = message;
+            if (type === 'loading') {
+                toastSpinner.style.display = 'block';
+                toastIcon.style.display = 'none';
+            } else {
+                toastSpinner.style.display = 'none';
+                toastIcon.style.display = 'inline';
+            }
+            toast.classList.add('show');
+            if (toastTimeout) clearTimeout(toastTimeout);
+        }
+
+        function hideToast() {
+            if (!toast) return;
+            toast.classList.remove('show');
+        }
+
+        // ============================================================
+        // ПЛАВНАЯ ПРОКРУТКА
+        // ============================================================
+        document.querySelector('.btn-primary[href="#catalog"]')?.addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelector('#catalog')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+
+        document.querySelector('.btn-secondary[href="#trust"]')?.addEventListener('click', function(e) {
+            e.preventDefault();
+            document.querySelector('#trust')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+
+        console.log('✅ MarketPlace загружен!');
+        console.log('📦 30+ маркетплейсов для быстрого доступа');
+        console.log('💡 Вставьте свои партнёрские ссылки в href, чтобы зарабатывать!');
+    </script>
+
+</body>
+</html>
